@@ -1,16 +1,22 @@
 package com.zerobank.runners;
 
+
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-
-        features = "src/test/resources/feature",
+        plugin = {
+                "html:target/cucumber-report.html",
+                "json:target/cucumber.json"
+        },
+        features = "src/test/resources/features",
         glue = "com/zerobank/stepdefinitions",
-        dryRun = true,
+        dryRun = false,
         tags = "@wip"
 )
+
 public class CukesRunner {
+
 }

@@ -3,17 +3,21 @@ package com.zerobank.utilities;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.concurrent.TimeUnit;
+
 
 public class Driver {
 
     /*
-        Creating the private constructor so this class' object
-        is not reachable from outside
-         */
-    private Driver(){}
+    Creating the private constructor so this class' object
+    is not reachable from outside
+     */
+    private Driver() {
+    }
 
     /*
     Making our 'driver' instance private so that it is not reachable from outside of the class.
@@ -21,11 +25,10 @@ public class Driver {
      */
     private static ThreadLocal<WebDriver> driverPool = new ThreadLocal<>();
 
-
     /*
     Creating re-usable utility method that will return same 'driver' instance everytime we call it.
      */
-    public static WebDriver getDriver(){
+    public static WebDriver getDriver() {
 
         if (driverPool.get() == null) {
 
@@ -53,7 +56,15 @@ public class Driver {
                         driverPool.get().manage().window().maximize();
                         driverPool.get().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
                         break;
-
+                    case "chromeSSL":
+                        WebDriverManager.chromedriver().setup();
+                        ChromeOptions capability = new ChromeOptions();
+                        capability.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+                        capability.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS,true);
+                        driverPool.set(new ChromeDriver(capability));
+                        driverPool.get().manage().window().maximize();
+                        driverPool.get().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+                        break;
                 }
             }
         }
@@ -67,14 +78,15 @@ public class Driver {
     }
 
     /*
-    This method makes sure we have some form of driver session or driver id has.
+    This method makes sure we have some form of driver sesion or driver id has.
     Either null or not null it must exist.
      */
-    public static void closeDriver(){
-        if(driverPool.get()!=null){
+    public static void closeDriver() {
+        if (driverPool.get() != null) {
             driverPool.get().quit();
-            driverPool=null;
+            driverPool.remove();
         }
     }
+
 
 }

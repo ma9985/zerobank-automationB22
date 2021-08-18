@@ -11,55 +11,65 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
-public class BrowserUtils {
+import static org.junit.Assert.assertTrue;
 
-    public void assertTitle(String expectedTitle){
-        WebDriverWait wait = new WebDriverWait(com.zerobank.utilities.Driver.getDriver(), 10);
+public class BrowserUtils {
+    /**
+     This method accepts String expected title
+     @param expectedTitle
+     */
+    public static void assertTitle(String expectedTitle){
+
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 10);
         wait.until(ExpectedConditions.titleIs(expectedTitle));
 
-        /**
-         * this method accepts String expected title
-         @param WebElement
-         */
-        String actualTitle = com.zerobank.utilities.Driver.getDriver().getTitle();
+        String actualTitle = Driver.getDriver().getTitle();
+
         Assert.assertEquals(expectedTitle, actualTitle);
     }
-    public static List<String> getElementsText(List<WebElement> webElementList) {
-        //create  placeholder List<String>
+
+    /**
+     This method accepts a List<WebElements> and returns List<String>
+     @param webElementList
+     */
+    public static List<String> getElementsText(List<WebElement> webElementList){
+
+        //Create placeholder List<String>
         List<String> actualAsString = new ArrayList<>();
 
         for (WebElement each : webElementList) {
 
             actualAsString.add(each.getText());
 
-
         }
+
         return actualAsString;
 
     }
+
     /*
      * switches to new window by the exact title
      * returns to original window if windows with given title not found
      */
     public static void switchToWindow(String targetTitle) {
-        String origin = com.zerobank.utilities.Driver.getDriver().getWindowHandle();
-        for (String handle : com.zerobank.utilities.Driver.getDriver().getWindowHandles()) {
-            com.zerobank.utilities.Driver.getDriver().switchTo().window(handle);
-            if (com.zerobank.utilities.Driver.getDriver().getTitle().equals(targetTitle)) {
+        String origin = Driver.getDriver().getWindowHandle();
+        for (String handle : Driver.getDriver().getWindowHandles()) {
+            Driver.getDriver().switchTo().window(handle);
+            if (Driver.getDriver().getTitle().equals(targetTitle)) {
                 return;
             }
         }
-        com.zerobank.utilities.Driver.getDriver().switchTo().window(origin);
+        Driver.getDriver().switchTo().window(origin);
     }
 
     public static void hover(WebElement element) {
-        Actions actions = new Actions(com.zerobank.utilities.Driver.getDriver());
+        Actions actions = new Actions(Driver.getDriver());
         actions.moveToElement(element).perform();
     }
 
     public static List<String> getElementsText(By locator) {
 
-        List<WebElement> elems = com.zerobank.utilities.Driver.getDriver().findElements(locator);
+        List<WebElement> elems = Driver.getDriver().findElements(locator);
         List<String> elemTexts = new ArrayList<>();
 
         for (WebElement el : elems) {
@@ -69,22 +79,22 @@ public class BrowserUtils {
     }
 
     public static WebElement waitForVisibility(WebElement element, int timeToWaitInSec) {
-        WebDriverWait wait = new WebDriverWait(com.zerobank.utilities.Driver.getDriver(), timeToWaitInSec);
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), timeToWaitInSec);
         return wait.until(ExpectedConditions.visibilityOf(element));
     }
 
     public static WebElement waitForVisibility(By locator, int timeout) {
-        WebDriverWait wait = new WebDriverWait(com.zerobank.utilities.Driver.getDriver(), timeout);
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), timeout);
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
     public static WebElement waitForClickability(WebElement element, int timeout) {
-        WebDriverWait wait = new WebDriverWait(com.zerobank.utilities.Driver.getDriver(), timeout);
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), timeout);
         return wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 
     public static WebElement waitForClickability(By locator, int timeout) {
-        WebDriverWait wait = new WebDriverWait(com.zerobank.utilities.Driver.getDriver(), timeout);
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), timeout);
         return wait.until(ExpectedConditions.elementToBeClickable(locator));
     }
 
@@ -96,7 +106,7 @@ public class BrowserUtils {
         };
         try {
             System.out.println("Waiting for page to load...");
-            WebDriverWait wait = new WebDriverWait(com.zerobank.utilities.Driver.getDriver(), timeOutInSeconds);
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), timeOutInSeconds);
             wait.until(expectation);
         } catch (Throwable error) {
             System.out.println(
@@ -105,7 +115,7 @@ public class BrowserUtils {
     }
 
     public static WebElement fluentWait(final WebElement webElement, int timeinsec) {
-        FluentWait<WebDriver> wait = new FluentWait<WebDriver>(com.zerobank.utilities.Driver.getDriver())
+        FluentWait<WebDriver> wait = new FluentWait<WebDriver>(Driver.getDriver())
                 .withTimeout(Duration.ofSeconds(timeinsec))
                 .pollingEvery(Duration.ofMillis(500))
                 .ignoring(NoSuchElementException.class);
@@ -125,14 +135,11 @@ public class BrowserUtils {
      */
     public static void verifyElementDisplayed(By by) {
         try {
-            assertTrue("Element not visible: " + by, com.zerobank.utilities.Driver.getDriver().findElement(by).isDisplayed());
+            assertTrue("Element not visible: " + by, Driver.getDriver().findElement(by).isDisplayed());
         } catch (NoSuchElementException e) {
             Assert.fail("Element not found: " + by);
 
         }
-    }
-
-    private static void assertTrue(String s, boolean displayed) {
     }
 
     /**
@@ -201,8 +208,8 @@ public class BrowserUtils {
      * @param element
      */
     public void clickWithJS(WebElement element) {
-        ((JavascriptExecutor) com.zerobank.utilities.Driver.getDriver()).executeScript("arguments[0].scrollIntoView(true);", element);
-        ((JavascriptExecutor) com.zerobank.utilities.Driver.getDriver()).executeScript("arguments[0].click();", element);
+        ((JavascriptExecutor) Driver.getDriver()).executeScript("arguments[0].scrollIntoView(true);", element);
+        ((JavascriptExecutor) Driver.getDriver()).executeScript("arguments[0].click();", element);
     }
 
 
@@ -212,7 +219,7 @@ public class BrowserUtils {
      * @param element
      */
     public void scrollToElement(WebElement element) {
-        ((JavascriptExecutor) com.zerobank.utilities.Driver.getDriver()).executeScript("arguments[0].scrollIntoView(true);", element);
+        ((JavascriptExecutor) Driver.getDriver()).executeScript("arguments[0].scrollIntoView(true);", element);
     }
 
     /**
@@ -221,7 +228,7 @@ public class BrowserUtils {
      * @param element
      */
     public void doubleClick(WebElement element) {
-        new Actions(com.zerobank.utilities.Driver.getDriver()).doubleClick(element).build().perform();
+        new Actions(Driver.getDriver()).doubleClick(element).build().perform();
     }
 
     /**
@@ -232,7 +239,7 @@ public class BrowserUtils {
      * @param attributeValue
      */
     public void setAttribute(WebElement element, String attributeName, String attributeValue) {
-        ((JavascriptExecutor) com.zerobank.utilities.Driver.getDriver()).executeScript("arguments[0].setAttribute(arguments[1], arguments[2]);", element, attributeName, attributeValue);
+        ((JavascriptExecutor) Driver.getDriver()).executeScript("arguments[0].setAttribute(arguments[1], arguments[2]);", element, attributeName, attributeValue);
     }
 
     /**
@@ -250,5 +257,35 @@ public class BrowserUtils {
             }
         }
     }
-    }
 
+
+
+
+
+
+    /*
+    Method that will accept int  arg
+    Wait for given second duration
+    //1sec = 1000 milli seconds
+    //1 * 1000 = 1000
+        Thread.sleep(1000);
+        Thread.sleep(2000);
+        Thread.sleep(3000);
+        BrowserUtils.sleep(1); --> 1 second
+     */
+    public static void sleep(int second) {
+
+        second*=1000;
+
+        try {
+
+            Thread.sleep(second);
+
+        } catch (InterruptedException e) {
+
+            System.out.println("something happened in the sleep method");
+
+        }
+
+    }
+}
