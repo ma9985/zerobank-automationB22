@@ -1,3 +1,5 @@
+@smoke @regression
+
 Feature: Account Activity Page
   Background:
     Given the user is on the login page
